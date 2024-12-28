@@ -165,7 +165,7 @@ class Txt2Pdf {
         $this->metadata['CreationDate'] = 'D:'.substr($date,0,-2)."'".substr($date,-2)."'";
         $str = "<<\n";
         foreach($this->metadata as $key=>$value) {
-            $str.= sprintf("/%s %s\n", $key, $this->_textstring($value));
+            $str.= sprintf("/%s (%s)\n", $key, $this->_textstring($value));
         }
         $str.=">>";
         return $this->_addObj($str);
@@ -415,7 +415,7 @@ class Txt2Pdf {
 
     private function _textstring($s){
         if(!$this->_isascii($s))  $s = $this->UTF8ToUTF16BE($s);
-        return '('.$this->_escape($s).')';
+        return $this->_escape($s);
     }
 
     // Converts UTF-8 strings to UTF16-BE.
@@ -449,11 +449,9 @@ class Txt2Pdf {
     }
 
     protected function _isascii($s)  {
-        // Test if string is ASCII
         $nb = strlen($s);
         for($i=0;$i<$nb;$i++){
-            if(ord($s[$i])>127)
-                return false;
+            if(ord($s[$i])>127) return false;
         }
         return true;
     }
